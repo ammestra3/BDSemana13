@@ -1,0 +1,216 @@
+create database ConsultorioSaludTotal;
+
+use ConsultorioSaludTotal;
+
+create table genero (
+id_genero int identity (1,1), 
+nombre_genero varchar (50),
+constraint pk_genero primary key (id_genero),
+);
+ 
+
+create table pacientes (
+id_paciente varchar (50), 
+nombre_paciente varchar (50),
+apellido_paciente varchar (50),
+fecha_Nac date, 
+id_genero int, 
+telefono varchar (50),
+email varchar (60),
+constraint pk_pacientes primary key (id_paciente),
+constraint fk_id_genero foreign key (id_genero)
+references genero (id_genero),
+);
+
+create table especialidad (
+id_especialidad int identity (1,1),
+nombre_especialidad varchar (50),
+constraint pk_especialidad primary key (id_especialidad),
+);
+
+
+
+create table medicos (
+id_medico varchar (50), 
+nombre_medico varchar (50),
+apellido_medico varchar (50),
+id_especialidad int, 
+telefono varchar (50),
+email varchar (50)
+constraint pk_medicos primary key (id_medico),
+constraint fk_id_especialidad foreign key (id_especialidad)
+references especialidad (id_especialidad),
+);
+
+create table citas (
+id_cita int identity (1,1), 
+id_paciente varchar (50),
+id_medico varchar (50),
+fecha_cita date,
+hora_cita time,
+motivo_consulta text, 
+constraint pk_citas primary key (id_cita),
+);
+
+create table diagnosticos (
+id_diagnostico int identity (1,1),
+id_cita int, 
+descripcion text,
+constraint pk_diagnostico primary key (id_diagnostico),
+constraint fk_id_cita foreign key (id_cita)
+references citas (id_cita),
+);
+
+create table recetas (
+id_receta int identity (1,1),
+id_diagnostico int,
+medicamento varchar (500),
+dosis text,
+duracion_dias int,
+constraint pk_recetas primary key (id_receta),
+constraint fk_id_diagnostico foreign key (id_diagnostico)
+references diagnosticos (id_diagnostico)
+);
+
+insert into genero (nombre_genero)
+values ('Masculino') , 
+('Femenino');
+
+insert into pacientes (id_paciente, nombre_paciente, apellido_paciente, fecha_Nac, id_genero, telefono, 
+email)
+values
+('1192742853', 'Ana Maria', 'Mestra Perez', '1999-07-09', '2', '3008121497', 'amestra@cesde.net'),
+('104250503', 'Carolina', 'Salas Gomez', '1995-08-11', '2', '3013122850', 'carolinasgomez1@gmail.com'),
+('100958642', 'Angelica', 'Rincon Carmelo', '1995-11-21', '2', '3145925666', 'anricarmelo9@gmail.com'),
+('72958213', 'Sheyla', 'Macea Listas', '1992-10-01', '2', '3206449873', 'sheymacea92@hotmail.com'),
+('75249876', 'Jay', 'Thompson Medicherla', '1989-11-12', '1', '3152980217', 'thompsonjay9@hotmail.com'),
+('1040759014', 'Michael', 'Rivera Perez', '2000-09-12', '1', '3235117899', 'michaelr12@gmail.com'),
+('1040756328', 'Santiago', 'Mejia Garcia', '1997-02-14', '1', '3208881216', 'santmejiagar@outlook.com'),
+('25698732', 'Jose Maria', 'Blandon Blanco', '1994-05-25', '1', '3136657600', 'josemblandonb@hotmail.com'),
+('102354278', 'Valentina', 'Vallejo', '2002-01-01', '2', '3115102879', 'vvallejo01@gmail.com'),
+('1017654987', 'Andrea Stefanny', 'Monsalve Carretero', '1996-12-31', '2', '3152980217', 'thompsonjay9@hotmail.com');
+
+insert into especialidad (nombre_especialidad)
+values ('Medicina General'),
+('Dermatologia'),
+('Ortopedia'),
+('Otorrinolaringologia'),
+('Optamologia'),
+('Odontologia'),
+('Oncologia');
+
+
+insert into medicos (id_medico, nombre_medico, apellido_medico, id_especialidad, telefono, email)
+values ('1012345678 ', 'Laura', 'González', 1, '5551234567', 'lgonzalez@clinicamed.com'),
+('1023456789', 'Andrés', 'Morales', 2, '5552345678', 'amorales@clinicamed.com'),
+('1034567890', 'Sofía', 'Ramírez', 3, '5553456789', 'sramirez@clinicamed.com'),
+('1045678901', 'Carlos', 'Herrera', 4, '5554567890', 'cherrera@clinicamed.com'),
+('1056789012', 'Valentina', 'Díaz', 5, '5555678901', 'vdiaz@clinicamed.com'),
+('1067890123', 'Martín', 'López', 1, '5556789012', 'mlopez@clinicamed.com'),
+('1078901234', 'Camila', 'Torres', 2, '5557890123', 'ctorres@clinicamed.com'),
+('1089012345', 'Diego', 'Fernández', 6, '5558901234', 'dfernandez@clinicamed.com'),
+('1090123456', 'Elena', 'Vargas', 4, '5559012345', 'evargas@clinicamed.com'),
+('1101234567', 'Javier', 'Castro', 7, '5550123456', 'jcastro@clinicamed.com');
+
+
+select * from pacientes;
+
+select apellido_medico from medicos
+order by apellido_medico asc;
+
+
+select nombre_paciente from pacientes
+where fecha_Nac > '2000-12-31';
+
+select* from pacientes
+where nombre_paciente LIKE 'A%';
+
+select id_genero, COUNT (*) AS total_pacientes
+from pacientes
+group by id_genero;
+
+insert into citas (id_paciente, id_medico, fecha_cita, hora_cita, motivo_consulta) 
+values ('1192742853', '1067890123', '2025-05-21', '08:00:00', 'Medicina General'),
+('75249876', '1023456789', '2025-05-18', '10:30:00', 'Dermatologia'),
+('102354278', '1089012345', '2025-06-02', '15:30:00', 'Odontologia'),
+('1040759014', '1034567890', '2025-08-18', '07:30:00', 'Ortopedia'),
+('25698732', '1101234567', '2025-07-19', '07:00:00', 'Oncologia'),
+('72958213', '1056789012', '2025-05-22', '11:00:00', 'Oftamologia'),
+('1017654987', '1045678901', '2025-09-16', '09:45:00', 'Otorrinolaringologia');
+
+
+select * from citas where fecha_cita = '2025-05-22' ; 
+
+SELECT citas.*, medicos.nombre_medico, medicos.apellido_medico
+FROM citas
+JOIN medicos ON citas.id_medico = medicos.id_medico
+WHERE medicos.apellido_medico = ' Vargas';
+
+
+
+SELECT medicos.id_medico, medicos.nombre_medico, medicos.apellido_medico, COUNT(*) AS total_citas
+FROM citas
+JOIN medicos ON citas.id_medico = medicos.id_medico
+GROUP BY medicos.id_medico, medicos.nombre_medico, medicos.apellido_medico;
+
+SELECT 
+  citas.id_cita,
+  citas.fecha_cita,
+  citas.hora_cita,
+  pacientes.nombre_paciente AS nombre_paciente,
+  pacientes.apellido_paciente AS apellido_paciente,
+  medicos.nombre_medico,
+  medicos.apellido_medico
+FROM citas
+JOIN pacientes ON citas.id_paciente = pacientes.id_paciente
+JOIN medicos ON citas.id_medico = medicos.id_medico;
+
+SELECT 
+  citas.id_cita,
+  citas.fecha_cita,
+  citas.hora_cita,
+  medicos.nombre_medico,
+  medicos.apellido_medico,
+  especialidad.nombre_especialidad
+FROM citas
+JOIN medicos ON citas.id_medico = medicos.id_medico
+JOIN  especialidad ON medicos.id_especialidad = especialidad.id_especialidad;
+
+SELECT 
+  citas.id_cita,
+  citas.fecha_cita,
+  pacientes.nombre_paciente,
+  pacientes.apellido_paciente,
+  medicos.nombre_medico,
+  medicos.apellido_medico,
+  especialidad.nombre_especialidad,
+  citas.motivo_consulta
+FROM citas
+JOIN pacientes ON citas.id_paciente = pacientes.id_paciente
+JOIN medicos ON citas.id_medico = medicos.id_medico
+JOIN especialidad ON medicos.id_especialidad = especialidad.id_especialidad
+WHERE citas.fecha_cita > '2025-05-23'
+ORDER BY citas.fecha_cita;
+
+SELECT pacientes.id_paciente, pacientes.nombre_paciente, pacientes.apellido_paciente
+FROM pacientes 
+LEFT JOIN citas ON pacientes.id_paciente = citas.id_paciente
+WHERE citas.id_cita IS NULL;
+
+SELECT 
+  medicos.id_medico,
+  medicos.nombre_medico,
+  medicos.apellido_medico,
+  COUNT (citas.id_cita) AS total_citas
+FROM medicos 
+JOIN citas  ON medicos.id_medico = citas.id_medico
+GROUP BY medicos.id_medico, medicos.nombre_medico, medicos.apellido_medico
+HAVING COUNT(citas.id_cita) > 3;
+
+SELECT 
+  especialidad.id_especialidad,
+  especialidad.nombre_especialidad,
+  COUNT(medicos.id_medico) AS total_medicos
+FROM especialidad
+LEFT JOIN medicos ON especialidad.id_especialidad = medicos.id_especialidad
+GROUP BY especialidad.id_especialidad, especialidad.nombre_especialidad;
